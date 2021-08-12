@@ -19,4 +19,4 @@ class PatientInformation(models.Model):
     modifydt = models.DateTimeField(db_column='ModifyDt', auto_now=True)
 
     class Meta:
-        db_table = "register"
+        db_table = "home"

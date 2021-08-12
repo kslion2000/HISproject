@@ -1,6 +1,6 @@
 from django.shortcuts import render
-import requests
-from register.forms import *
+import home
+from home.forms import *
 
 
 # Create your views here.
@@ -11,7 +11,7 @@ def index(request):
     return render(request, "posts/index.html", {"articles": articles})
 
 def resign_page(request):
-    return render(request, 'register/resign_page.html')
+    return render(request, 'register/register.html')
 
 def crate_patient(request):
     patient_info = PatientInformationForm()

@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('modifydt', models.DateTimeField(auto_now=True, db_column='ModifyDt')),
             ],
             options={
-                'db_table': 'register',
+                'db_table': 'home',
             },
         ),
     ]
