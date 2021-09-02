@@ -8,13 +8,13 @@
                 <legend class="border-bottom mb-4">Resign Here</legend>
                 {{ form|crispy }}
             </fieldset>
-            <form class="form-group">
-                <button class="btn btn-online-info" type="submit">Sign Up</button>
-            </form>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Sign Up</button>
+            </div>
         </form>
         <div class="border-top pt-3">
             <small class="text-muted">
-                Already have an account?<a class="ml-2 stretched-link" herf="{% url 'login' %}">Sign In</a>
+                Already Have An Account? <a class="ml-2" href="{% url 'login' %}">Sign In</a>
             </small>
         </div>
     </div>
