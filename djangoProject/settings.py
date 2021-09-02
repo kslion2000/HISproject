@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+ALLOWED_HOSTS = ['cloudconsulation.herokuapp.com']
 
 # Application definition
 
