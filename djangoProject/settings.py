@@ -147,5 +147,5 @@ EMAIL_HOST_USER = os.environ.get('DB_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('DB_PASS')
 
 ALLOWED_HOSTS = [
-    'djangoProject.herokuapp.com/'
+    'vast-reaches-63465.herokuapp.com/'
 ]
