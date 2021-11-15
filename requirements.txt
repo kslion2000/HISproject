@@ -62,8 +62,6 @@ pyodbc==4.0.25
 pyOpenSSL==19.1.0
 pyparsing==2.4.0
 PyPDF2==1.26.0
-PyQt5==5.11.3
-pyqt5-tools==5.14.0.2
 python-dateutil==2.8.0
 python-dotenv==0.10.2
 pytz==2017.2
