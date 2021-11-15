@@ -68,8 +68,6 @@ pyqt5-tools==5.14.0.2
 python-dateutil==2.8.0
 python-dotenv==0.10.2
 pytz==2017.2
-pywin32==224
-pywin32-ctypes==0.2.0
 QScintilla==2.11.1
 reportlab==3.5.23
 requests==2.18.4
