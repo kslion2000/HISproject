@@ -58,7 +58,6 @@ PyInstaller==3.5
 PyJWT==1.5.2
 pymssql==2.1.5
 PyMySQL==0.7.11
-pyodbc==4.0.25
 pyOpenSSL==19.1.0
 pyparsing==2.4.0
 PyPDF2==1.26.0
