@@ -11,8 +11,12 @@
     }
     .top_title{
         color: #004B97;
-        margin-left: 10px;
+        padding-left: 10px;
         font-family: 'Kalam', cursive;
+    }
+    .row{
+        margin-right: 0 !important;
+        margin-left: 0 !important;
     }
 </style>
   <head>
@@ -36,7 +40,7 @@
       <nav id="topic" class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
             <img class="title_img" width="50" height="50" src="{% static 'img/cloud-computing.png' %}">
-            <a class="navbar-brand mr-4 top_title" href="{% url 'base_home' %}">Cloud Counseling Office</a>
+            <a class="navbar-brand top_title" href="{% url 'base_home' %}">Cloud Counseling Office</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -50,10 +54,10 @@
             <div class="navbar-nav">
               {% if user.is_authenticated %}
                 <a class="nav-item nav-link" href="{% url 'appointment' %}">My Appointment</a>
-                <a class="btn btn-outline-primary" href="{% url 'logout' %}">Logout</a>
+                <a class="btn btn btn btn-outline-light" href="{% url 'logout' %}">Logout</a>
               {% else %}
                 <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                <a class="btn btn-outline-primary" href="{% url 'login' %}">Login</a>
+                <a class="btn btn btn-outline-light" href="{% url 'login' %}">Login</a>
               {% endif %}
             </div>
           </div>
