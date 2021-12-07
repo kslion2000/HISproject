@@ -1,7 +1,37 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+    <style>
+        #appointment_top{
+            font-family: "Georgia", serif;
+            font-size: xx-large;
+            padding-left: 40%;
+        }
+    </style>
      <div class="row no-gutters">
-        <div class="col-4"></div>
+        <div class="col-3"></div>
+        <div class="col-5">
+            <div id="appointment_top">
+                <label>Consultation appointment</label>
+            </div>
+            <form>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th>*Name</th>
+                            <td>
+                                <input type="text" placeholder="please enter your name" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Contact Number</th>
+                            <td>
+                                <input type="text" required>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
      </div>
 {% endblock %}

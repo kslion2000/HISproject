@@ -15,5 +15,12 @@
       <jdbc-url>jdbc:sqlite:C:\Users\Test\PycharmProjects\HISproject\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="db [3]" uuid="b0a30694-a0b0-420e-9220-1913e8416898">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\kslio\PycharmProjects\HISproject\db.sqlite3</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
