@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from users.models import New_user
+from django.core.validators import MaxLengthValidator
 
 class New_userForm(UserCreationForm):
     first_name = forms.CharField(max_length=20)

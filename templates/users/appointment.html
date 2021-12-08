@@ -5,28 +5,169 @@
         #appointment_top{
             font-family: "Georgia", serif;
             font-size: xx-large;
-            padding-left: 40%;
+            padding-left: 30%;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        tr{
+            border: #5f788a;
+            border-style: solid;
+        }
+        th{
+            background-color: #5f788a;
+            color: white;
+            font-size: large;
+            width: 150px;
+        }
+        input{
+            border-style: none;
+            font-size: x-large;
+        }
+        .week{
+            width: 100px;
+        }
+        .part1_ans{
+            width: 500px;
         }
     </style>
      <div class="row no-gutters">
         <div class="col-3"></div>
-        <div class="col-5">
+        <div class="col-6">
             <div id="appointment_top">
                 <label>Consultation appointment</label>
             </div>
-            <form>
-                <table>
+            <form id="" method="post">
+                <table width="100%">
                     <tbody>
                         <tr>
-                            <th>*Name</th>
+                            <th>First Name</th>
                             <td>
-                                <input type="text" placeholder="please enter your name" required>
+                                <input name="first_name" value="{{ user_form.first_name.value }}" readonly>
+                            </td>
+                            <th>Last Name</th>
+                            <td>
+                                <input type="text" name="last_name" value="{{ user_form.last_name.value }}" readonly>
                             </td>
                         </tr>
                         <tr>
                             <th>Contact Number</th>
                             <td>
-                                <input type="text" required>
+                                <input type="text" name="contact_number" value="{{ user_form.contact_number.value }}" readonly>
+                            </td>
+                            <th>Email</th>
+                            <td>
+                                <input type="text" name="email" value="{{ user_form.email.value }}" readonly>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <table>
+                    <tbody>
+                        <tr style="width: 100%">
+                            <th rowspan=4>Available Time</th>
+                            <td class="part1_ans" nowrap="nowrap">
+                                <label class="week">Monday</label>
+                                <input type="checkbox" class="btn-check" id="mon_m" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="mon_m">Morning</label>
+
+                                <input type="checkbox" class="btn-check" id="mon_a" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="mon_a">Afternoon</label>
+
+                                <input type="checkbox" class="btn-check" id="mon_e" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="mon_e">Evening</label>
+                            </td>
+                            <td class="part1_ans" nowrap="nowrap">
+                                <label class="week">Tuesday</label>
+                                <input type="checkbox" class="btn-check" id="tue_m" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="tue_m">Morning</label>
+
+                                <input type="checkbox" class="btn-check" id="tue_a" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="tue_a">Afternoon</label>
+
+                                <input type="checkbox" class="btn-check" id="tue_e" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="tue_e">Evening</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="part1_ans" nowrap="nowrap">
+                                <label class="week">Wednesday</label>
+                                <input type="checkbox" class="btn-check" id="wed_m" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="wed_m">Morning</label>
+
+                                <input type="checkbox" class="btn-check" id="wed_a" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="wed_a">Afternoon</label>
+
+                                <input type="checkbox" class="btn-check" id="wed_e" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="wed_e">Evening</label>
+                            </td>
+                            <td class="part1_ans" nowrap="nowrap">
+                                <label class="week">Thursday</label>
+                                <input type="checkbox" class="btn-check" id="thu_m" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="thu_m">Morning</label>
+
+                                <input type="checkbox" class="btn-check" id="thu_a" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="thu_a">Afternoon</label>
+
+                                <input type="checkbox" class="btn-check" id="thu_e" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="thu_e">Evening</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="part1_ans" nowrap="nowrap">
+                                <label class="week">Friday</label>
+                                <input type="checkbox" class="btn-check" id="fri_m" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="fri_m">Morning</label>
+
+                                <input type="checkbox" class="btn-check" id="fri_a" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="fri_a">Afternoon</label>
+
+                                <input type="checkbox" class="btn-check" id="fri_e" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="fri_e">Evening</label>
+                            </td>
+                            <td class="part1_ans" nowrap="nowrap">
+                                <label class="week">Saturday</label>
+                                <input type="checkbox" class="btn-check" id="sat_m" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="sat_m">Morning</label>
+
+                                <input type="checkbox" class="btn-check" id="sat_a" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="sat_a">Afternoon</label>
+
+                                <input type="checkbox" class="btn-check" id="sat_e" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="sat_e">Evening</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="part1_ans" nowrap="nowrap">
+                                <label class="week">Sunday</label>
+                                <input type="checkbox" class="btn-check" id="sun_m" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="sun_m">Morning</label>
+
+                                <input type="checkbox" class="btn-check" id="sun_a" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="sun_a">Afternoon</label>
+
+                                <input type="checkbox" class="btn-check" id="sun_e" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="sun_e">Evening</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Consultation Question</th>
+                            <td colspan="2">
+                                <input type="checkbox" class="btn-check" id="q_1" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_1">Career issues</label>
+
+                                <input type="checkbox" class="btn-check" id="q_2" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_2">Over stress</label>
+
+                                <input type="checkbox" class="btn-check" id="q_3" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_3">Relationship problem</label>
+
+                                <input type="checkbox" class="btn-check" id="q_4" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_4">Suicide/Self-injury</label>
+
+                                <input type="checkbox" class="btn-check" id="q_4" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_4">Family issues</label>
+
                             </td>
                         </tr>
                     </tbody>
