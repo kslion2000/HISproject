@@ -25,9 +25,20 @@
         }
         .week{
             width: 100px;
+            margin-left: 10px;
         }
         .part1_ans{
             width: 500px;
+        }
+        .input-group{
+            border: #5f788a;
+            border-style: double;
+        }
+        textarea{
+            resize:none;
+        }
+        .q_button{
+            margin-top: 5px;
         }
     </style>
      <div class="row no-gutters">
@@ -36,7 +47,8 @@
             <div id="appointment_top">
                 <label>Consultation appointment</label>
             </div>
-            <form id="" method="post">
+            <form id="appointment_form" method="post">
+                <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
                 <table width="100%">
                     <tbody>
                         <tr>
@@ -151,28 +163,63 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Consultation Question</th>
+                            <th>Consultation Issue</th>
                             <td colspan="2">
-                                <input type="checkbox" class="btn-check" id="q_1" autocomplete="off">
-                                <label class="btn btn-outline-success" for="q_1">Career issues</label>
+                                <input type="checkbox" class="btn-check" id="q_career" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_career">Career issues</label>
 
-                                <input type="checkbox" class="btn-check" id="q_2" autocomplete="off">
-                                <label class="btn btn-outline-success" for="q_2">Over stress</label>
+                                <input type="checkbox" class="btn-check" id="q_family" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_family">Family issues</label>
 
-                                <input type="checkbox" class="btn-check" id="q_3" autocomplete="off">
-                                <label class="btn btn-outline-success" for="q_3">Relationship problem</label>
+                                <input type="checkbox" class="btn-check" id="q_stress" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_stress">Over stress</label>
 
-                                <input type="checkbox" class="btn-check" id="q_4" autocomplete="off">
-                                <label class="btn btn-outline-success" for="q_4">Suicide/Self-injury</label>
+                                <input type="checkbox" class="btn-check" id="q_relationship" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_relationship">Relationship problem</label>
 
-                                <input type="checkbox" class="btn-check" id="q_4" autocomplete="off">
-                                <label class="btn btn-outline-success" for="q_4">Family issues</label>
+                                <input type="checkbox" class="btn-check" id="q_suicide" autocomplete="off">
+                                <label class="btn btn-outline-success" for="q_suicide">Suicide/Self-injury</label>
 
+                                <input type="checkbox" class="btn-check" id="q_violence" autocomplete="off">
+                                <label class="btn btn-outline-success q_button" for="q_violence">Violence/Sexual assault</label>
+
+                                <input type="checkbox" class="btn-check" id="q_homo" autocomplete="off">
+                                <label class="btn btn-outline-success q_button" for="q_homo">Homosexual/Gender issues</label>
+
+                                <input type="checkbox" class="btn-check" id="q_trauma" autocomplete="off">
+                                <label class="btn btn-outline-success q_button" for="q_trauma">Psychological trauma</label>
+
+                                <div class="input-group">
+                                  <span class="input-group-text">Other problem (please describe)</span>
+                                  <textarea class="form-control" aria-label="With textarea"></textarea>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </form>
+            <button
+                class="g-recaptcha"
+                data-sitekey='6Ldxd4wdAAAAAKs6CJTRvL2sHtk86SWf-IVME2bH'
+                data-action="verify1"
+                data-callback="verifyCallback">送出
+            </button>
         </div>
      </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=reCAPTCHA_site_key"></script>
+    <script>
+        grecaptcha.ready(function() {
+          $('#appointment_form').submit(function(e){
+              var form = this;
+              e.preventDefault()
+              grecaptcha.execute('reCAPTCHA_site_key', {action: 'contactform'}).then(function(token) {
+                  $('#recaptcha').val(token)
+                  form.submit()
+              });
+          })
+
+        });
+    </script>
 {% endblock %}

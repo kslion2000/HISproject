@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import New_userForm
 from users.models import New_user
+from django.conf import settings
 import os
 
 def register(request):
@@ -15,7 +16,7 @@ def register(request):
             return redirect('login')
     else:
         form = New_userForm()
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'users/register.html', {'form': form, 'site_key': settings.RECAPTCHA_SITE_KEY})
 
 @login_required()
 def appointment(request):
