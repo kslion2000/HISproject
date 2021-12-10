@@ -204,10 +204,11 @@
             </form>
         </div>
      </div>
+    <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
     <script>
         grecaptcha.ready(function() {
-          grecaptcha.execute('{{site_key}}', {action: "/appointment/"}).then(function(token) {
-              $('#g-recaptcha-response').value = token
+          grecaptcha.execute('{{site_key}}', {action: "appointment"}).then(function(token) {
+              $('#g-recaptcha-response').attr("value",token)
           });
         });
 

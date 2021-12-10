@@ -28,13 +28,15 @@ def appointment(request):
     site_key = settings.RECAPTCHA_SITE_KEY
     if request.method == 'POST':
         datas = request.POST
-        recaptcha_response = request.POST.get('g-recaptcha-response')
+        recaptcha_response = datas.getlist('g-recaptcha-response')[0]
+        print(recaptcha_response)
         data = {
             'secret': settings.RECAPTCHA_SECRET_KEY,
             'response': recaptcha_response
         }
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
         result = r.json()
+        print(result)
 
         if result['success']:
             result = {'result': True, 'message': 'Save success.'}
