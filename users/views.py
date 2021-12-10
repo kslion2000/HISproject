@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import HttpResponse
-from .forms import New_userForm
+from django.contrib import messages
+from .forms import *
 from users.models import New_user
 from django.conf import settings
 import requests
@@ -28,20 +29,24 @@ def appointment(request):
     site_key = settings.RECAPTCHA_SITE_KEY
     if request.method == 'POST':
         datas = request.POST
+        form = AppointmentIssueForm(datas)
+        print(form)
+        if form.is_valid():
+            form.save()
+        print(aaa)
         recaptcha_response = datas.getlist('g-recaptcha-response')[0]
-        print(recaptcha_response)
         data = {
             'secret': settings.RECAPTCHA_SECRET_KEY,
             'response': recaptcha_response
         }
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
         result = r.json()
-        print(result)
 
         if result['success']:
             result = {'result': True, 'message': 'Save success.'}
+            return HttpResponse(json.dumps(result), content_type='application/json')
         else:
             result = {'result': False, 'message': 'Fail!'}
-        return HttpResponse(json.dumps(result), content_type='application/json')
+            return HttpResponse(json.dumps(result), content_type='application/json')
     else:
         return render(request, 'users/appointment.html', locals())
