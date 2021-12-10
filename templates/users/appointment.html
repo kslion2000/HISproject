@@ -48,7 +48,8 @@
                 <label>Consultation appointment</label>
             </div>
             <form id="appointment_form" method="post">
-                <input type="hidden" name="g-recaptcha-response" id='recaptcha'>
+                {% csrf_token %}
+                <input type="hidden" name="g-recaptcha-response" id='g-recaptcha-response'>
                 <table width="100%">
                     <tbody>
                         <tr>
@@ -197,29 +198,30 @@
                         </tr>
                     </tbody>
                 </table>
+                <button id="submit" class="g-recaptcha btn btn-primary" data-sitekey='{{site_key}}'
+                    data-action="verify1" data-callback="verifyCallback" >Submit
+                </button>
             </form>
-            <button
-                class="g-recaptcha"
-                data-sitekey='6Ldxd4wdAAAAAKs6CJTRvL2sHtk86SWf-IVME2bH'
-                data-action="verify1"
-                data-callback="verifyCallback">送出
-            </button>
         </div>
      </div>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=reCAPTCHA_site_key"></script>
     <script>
         grecaptcha.ready(function() {
-          $('#appointment_form').submit(function(e){
-              var form = this;
-              e.preventDefault()
-              grecaptcha.execute('reCAPTCHA_site_key', {action: 'contactform'}).then(function(token) {
-                  $('#recaptcha').val(token)
-                  form.submit()
-              });
-          })
-
+          grecaptcha.execute('{{site_key}}', {action: "/appointment/"}).then(function(token) {
+              $('#g-recaptcha-response').value = token
+          });
         });
+
+        $('#submit').click( function() {
+            $.ajax({
+                url: "{% url 'appointment' %}",
+                type: 'post',
+                dataType: 'json',
+                data: $('#appointment_form').serialize(),
+                success: function(data) {
+                    alert(data.result)
+                }
+            });
+        });
+
     </script>
 {% endblock %}
