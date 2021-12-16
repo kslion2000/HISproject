@@ -25,16 +25,16 @@ class AppointmentWeekForm(forms.ModelForm):
         fields = ['weekday', 'morning', 'afternoon', 'evening']
 
 class AppointmentIssueForm(forms.ModelForm):
-    q_career = forms.BooleanField()
-    q_family = forms.BooleanField()
-    q_stress = forms.BooleanField()
-    q_relationship = forms.BooleanField()
-    q_suicide = forms.BooleanField()
-    q_violence = forms.BooleanField()
-    q_homo = forms.BooleanField()
-    q_trauma = forms.BooleanField()
-    q_other = forms.CharField(max_length=300)
+    q_career = forms.BooleanField(required=False)
+    q_family = forms.BooleanField(required=False)
+    q_stress = forms.BooleanField(required=False)
+    q_relationship = forms.BooleanField(required=False)
+    q_suicide = forms.BooleanField(required=False)
+    q_violence = forms.BooleanField(required=False)
+    q_homo = forms.BooleanField(required=False)
+    q_trauma = forms.BooleanField(required=False)
+    q_other = forms.CharField(max_length=300, required=False)
 
     class Meta:
         model = AppointmentIssue
-        exclude = []
+        exclude = ['user_id', 'creatdt', 'updatedt']

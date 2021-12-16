@@ -8,6 +8,7 @@ from users.models import New_user
 from django.conf import settings
 import requests
 import json
+import datetime
 
 def register(request):
     if request.method == 'POST':
@@ -22,17 +23,55 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 @login_required()
-def appointment(request):
+def appointment(request, monday={}, tuesday={}, wednesday={}, thursday={}, friday={}, saturday={}, sunday={}):
     user_id = request.user.id
     user_info = New_user.objects.get(user_ptr_id=user_id)
     user_form = New_userForm(instance=user_info)
     site_key = settings.RECAPTCHA_SITE_KEY
+    issue_old_data = AppointmentIssue.objects.filter(user_id_id=user_id)
+    week_old_data = AppointmentWeek.objects.filter(user_id_id=user_id)
     if request.method == 'POST':
-        datas = request.POST
-        form = AppointmentIssueForm(datas)
-        print(form)
-        if form.is_valid():
-            form.save()
+        datas = dict(request.POST)
+        save_data = []
+        for key in datas.keys():
+            if key.startswith('mon'):
+                monday[key.split('_')[1]] = True
+            if key.startswith('tue'):
+                tuesday[key.split('_')[1]] = True
+            if key.startswith('wed'):
+                wednesday[key.split('_')[1]] = True
+            if key.startswith('thu'):
+                thursday[key.split('_')[1]] = True
+            if key.startswith('fri'):
+                friday[key.split('_')[1]] = True
+            if key.startswith('sat'):
+                saturday[key.split('_')[1]] = True
+            if key.startswith('sun'):
+                sunday[key.split('_')[1]] = True
+        print(monday)
+        datas['q_other'] = datas['q_other'][0]
+        if issue_old_data:
+            form = AppointmentIssueForm(datas, instance=issue_old_data[0])
+            if form.is_valid():
+                appointment_temp = form.save(commit=False)
+                appointment_temp.user_id = user_info
+                appointment_temp.updatedt = datetime.datetime.today()
+                appointment_temp.save()
+            else:
+                errors = form.errors
+                print(errors)
+        else:
+            form = AppointmentIssueForm(datas)
+            if form.is_valid():
+                appointment_temp = form.save(commit=False)
+                appointment_temp.user_id = user_info
+                appointment_temp.creatdt = datetime.datetime.today()
+                appointment_temp.updatedt = datetime.datetime.today()
+                appointment_temp.save()
+            else:
+                errors = form.errors
+                print(errors)
+
         print(aaa)
         recaptcha_response = datas.getlist('g-recaptcha-response')[0]
         data = {
@@ -49,4 +88,8 @@ def appointment(request):
             result = {'result': False, 'message': 'Fail!'}
             return HttpResponse(json.dumps(result), content_type='application/json')
     else:
+        if issue_old_data:
+            form = AppointmentIssueForm(instance=issue_old_data[0])
+        else:
+            form = AppointmentIssueForm()
         return render(request, 'users/appointment.html', locals())

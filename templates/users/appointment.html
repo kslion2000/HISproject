@@ -50,7 +50,6 @@
             <form id="appointment_form" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="g-recaptcha-response" id='g-recaptcha-response'>
-                <input type="hidden" name="user_ptr_id" id="user_ptr_id">
                 <table width="100%">
                     <tbody>
                         <tr>
@@ -193,7 +192,7 @@
 
                                 <div class="input-group">
                                   <span class="input-group-text">Other problem (please describe)</span>
-                                  <textarea name="q_other" class="form-control" aria-label="With textarea"></textarea>
+                                  <textarea name="q_other" class="form-control" aria-label="With textarea">{{ form.q_other.value }}</textarea>
                                 </div>
                             </td>
                         </tr>
@@ -207,6 +206,33 @@
      </div>
     <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
     <script>
+        $( document ).ready(function(){
+            if ('{{ form.q_career.value }}' == 'True'){
+                $('#q_career').attr('checked','true')
+            };
+            if ('{{ form.q_family.value }}' == 'True'){
+                $('#q_family').attr('checked','true')
+            };
+            if ('{{ form.q_stress.value }}' == 'True'){
+                $('#q_stress').attr('checked','true')
+            };
+            if ('{{ form.q_relationship.value }}' == 'True'){
+                $('#q_relationship').attr('checked','true')
+            };
+            if ('{{ form.q_suicide.value }}' == 'True'){
+                $('#q_suicide').attr('checked','true')
+            };
+            if ('{{ form.q_violence.value }}' == 'True'){
+                $('#q_violence').attr('checked','true')
+            };
+            if ('{{ form.q_homo.value }}' == 'True'){
+                $('#q_homo').attr('checked','true')
+            };
+            if ('{{ form.q_trauma.value }}' == 'True'){
+                $('#q_trauma').attr('checked','true')
+            };
+        });
+
         grecaptcha.ready(function() {
           grecaptcha.execute('{{site_key}}', {action: "appointment"}).then(function(token) {
               $('#g-recaptcha-response').attr("value",token)
