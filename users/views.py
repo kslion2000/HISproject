@@ -23,33 +23,29 @@ def register(request):
     return render(request, 'users/register.html', {'form': form})
 
 @login_required()
-def appointment(request, monday={}, tuesday={}, wednesday={}, thursday={}, friday={}, saturday={}, sunday={}):
+def appointment(request):
     user_id = request.user.id
     user_info = New_user.objects.get(user_ptr_id=user_id)
     user_form = New_userForm(instance=user_info)
     site_key = settings.RECAPTCHA_SITE_KEY
     issue_old_data = AppointmentIssue.objects.filter(user_id_id=user_id)
-    week_old_data = AppointmentWeek.objects.filter(user_id_id=user_id)
     if request.method == 'POST':
         datas = dict(request.POST)
-        save_data = []
-        for key in datas.keys():
-            if key.startswith('mon'):
-                monday[key.split('_')[1]] = True
-            if key.startswith('tue'):
-                tuesday[key.split('_')[1]] = True
-            if key.startswith('wed'):
-                wednesday[key.split('_')[1]] = True
-            if key.startswith('thu'):
-                thursday[key.split('_')[1]] = True
-            if key.startswith('fri'):
-                friday[key.split('_')[1]] = True
-            if key.startswith('sat'):
-                saturday[key.split('_')[1]] = True
-            if key.startswith('sun'):
-                sunday[key.split('_')[1]] = True
-        print(monday)
         datas['q_other'] = datas['q_other'][0]
+        week_dic = {}
+
+        #安全性驗證
+        recaptcha_response = datas['g-recaptcha-response'][0]
+        data = {
+            'secret': settings.RECAPTCHA_SECRET_KEY,
+            'response': recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+        if result['success'] != True:
+            result = {'result': False, 'message': 'Security verification failed! Please try again.'}
+            return HttpResponse(json.dumps(result), content_type='application/json')
+
         if issue_old_data:
             form = AppointmentIssueForm(datas, instance=issue_old_data[0])
             if form.is_valid():
@@ -57,9 +53,13 @@ def appointment(request, monday={}, tuesday={}, wednesday={}, thursday={}, frida
                 appointment_temp.user_id = user_info
                 appointment_temp.updatedt = datetime.datetime.today()
                 appointment_temp.save()
+                result = {'result': True, 'message': 'Save success. We will arrange with it as soon as possible.'}
+                return HttpResponse(json.dumps(result), content_type='application/json')
+
             else:
                 errors = form.errors
-                print(errors)
+                result = {'result': False, 'message': errors}
+                return HttpResponse(json.dumps(result), content_type='application/json')
         else:
             form = AppointmentIssueForm(datas)
             if form.is_valid():
@@ -68,25 +68,11 @@ def appointment(request, monday={}, tuesday={}, wednesday={}, thursday={}, frida
                 appointment_temp.creatdt = datetime.datetime.today()
                 appointment_temp.updatedt = datetime.datetime.today()
                 appointment_temp.save()
+                result = {'result': True, 'message': 'Save success. We will arrange with it as soon as possible.'}
+                return HttpResponse(json.dumps(result), content_type='application/json')
             else:
                 errors = form.errors
-                print(errors)
-
-        print(aaa)
-        recaptcha_response = datas.getlist('g-recaptcha-response')[0]
-        data = {
-            'secret': settings.RECAPTCHA_SECRET_KEY,
-            'response': recaptcha_response
-        }
-        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-        result = r.json()
-
-        if result['success']:
-            result = {'result': True, 'message': 'Save success.'}
-            return HttpResponse(json.dumps(result), content_type='application/json')
-        else:
-            result = {'result': False, 'message': 'Fail!'}
-            return HttpResponse(json.dumps(result), content_type='application/json')
+                return HttpResponse(json.dumps(errors), content_type='application/json')
     else:
         if issue_old_data:
             form = AppointmentIssueForm(instance=issue_old_data[0])

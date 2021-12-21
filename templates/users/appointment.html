@@ -33,6 +33,7 @@
         .input-group{
             border: #5f788a;
             border-style: double;
+            height: 150px;
         }
         textarea{
             resize:none;
@@ -192,45 +193,73 @@
 
                                 <div class="input-group">
                                   <span class="input-group-text">Other problem (please describe)</span>
-                                  <textarea name="q_other" class="form-control" aria-label="With textarea">{{ form.q_other.value }}</textarea>
+                                  <textarea name="q_other" class="form-control" aria-label="With textarea">{% if form.q_other.value %}{{ form.q_other.value }}{% endif %}</textarea>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <button id="submit" class="g-recaptcha btn btn-primary" data-sitekey='{{site_key}}'
-                    data-action="verify1" data-callback="verifyCallback" >Submit
-                </button>
+                <div style="margin-top: 20px;" align="center">
+                     <button id="submit" class="g-recaptcha btn btn-primary" data-sitekey='{{site_key}}'
+                        data-action="verify1" data-callback="verifyCallback" >{% if issue_old_data or week_old_data %}Update{% else %}Save{% endif %}
+                    </button>
+                </div>
             </form>
         </div>
      </div>
+
+    <div id="error_div" class="modal" role="dialog" style="display: none; margin: 0 auto;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #FFD2D2">
+                    <h5 class="modal-title">Warning</h5>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label id="error_label"></label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="javascript:$('#error_div').css('display', 'none')">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
     <script>
         $( document ).ready(function(){
-            if ('{{ form.q_career.value }}' == 'True'){
-                $('#q_career').attr('checked','true')
-            };
-            if ('{{ form.q_family.value }}' == 'True'){
-                $('#q_family').attr('checked','true')
-            };
-            if ('{{ form.q_stress.value }}' == 'True'){
-                $('#q_stress').attr('checked','true')
-            };
-            if ('{{ form.q_relationship.value }}' == 'True'){
-                $('#q_relationship').attr('checked','true')
-            };
-            if ('{{ form.q_suicide.value }}' == 'True'){
-                $('#q_suicide').attr('checked','true')
-            };
-            if ('{{ form.q_violence.value }}' == 'True'){
-                $('#q_violence').attr('checked','true')
-            };
-            if ('{{ form.q_homo.value }}' == 'True'){
-                $('#q_homo').attr('checked','true')
-            };
-            if ('{{ form.q_trauma.value }}' == 'True'){
-                $('#q_trauma').attr('checked','true')
-            };
+            if ('{{ form.q_career.value }}' == 'True'){ $('#q_career').attr('checked','true')};
+            if ('{{ form.q_family.value }}' == 'True'){ $('#q_family').attr('checked','true')};
+            if ('{{ form.q_stress.value }}' == 'True'){ $('#q_stress').attr('checked','true')};
+            if ('{{ form.q_relationship.value }}' == 'True'){$('#q_relationship').attr('checked','true')};
+            if ('{{ form.q_suicide.value }}' == 'True'){ $('#q_suicide').attr('checked','true')};
+            if ('{{ form.q_violence.value }}' == 'True'){ $('#q_violence').attr('checked','true')};
+            if ('{{ form.q_homo.value }}' == 'True'){ $('#q_homo').attr('checked','true')};
+            if ('{{ form.q_trauma.value }}' == 'True'){ $('#q_trauma').attr('checked','true')};
+
+            if ('{{ form.mon_m.value }}' == 'True'){ $('#mon_m').attr('checked','true')};
+            if ('{{ form.mon_a.value }}' == 'True'){ $('#mon_a').attr('checked','true')};
+            if ('{{ form.mon_e.value }}' == 'True'){ $('#mon_e').attr('checked','true')};
+            if ('{{ form.tue_m.value }}' == 'True'){ $('#tue_m').attr('checked','true')};
+            if ('{{ form.tue_a.value }}' == 'True'){ $('#tue_a').attr('checked','true')};
+            if ('{{ form.tue_e.value }}' == 'True'){ $('#tue_e').attr('checked','true')};
+            if ('{{ form.wed_m.value }}' == 'True'){ $('#wed_m').attr('checked','true')};
+            if ('{{ form.wed_a.value }}' == 'True'){ $('#wed_a').attr('checked','true')};
+            if ('{{ form.wed_e.value }}' == 'True'){ $('#wed_e').attr('checked','true')};
+            if ('{{ form.thu_m.value }}' == 'True'){ $('#thu_m').attr('checked','true')};
+            if ('{{ form.thu_a.value }}' == 'True'){ $('#thu_a').attr('checked','true')};
+            if ('{{ form.thu_e.value }}' == 'True'){ $('#thu_e').attr('checked','true')};
+            if ('{{ form.fri_m.value }}' == 'True'){ $('#fri_m').attr('checked','true')};
+            if ('{{ form.fri_a.value }}' == 'True'){ $('#fri_a').attr('checked','true')};
+            if ('{{ form.fri_e.value }}' == 'True'){ $('#fri_e').attr('checked','true')};
+            if ('{{ form.sat_m.value }}' == 'True'){ $('#sat_m').attr('checked','true')};
+            if ('{{ form.sat_a.value }}' == 'True'){ $('#sat_a').attr('checked','true')};
+            if ('{{ form.sat_e.value }}' == 'True'){ $('#sat_e').attr('checked','true')};
+            if ('{{ form.sun_m.value }}' == 'True'){ $('#sun_m').attr('checked','true')};
+            if ('{{ form.sun_a.value }}' == 'True'){ $('#sun_a').attr('checked','true')};
+            if ('{{ form.sun_e.value }}' == 'True'){ $('#sun_e').attr('checked','true')};
+
+
         });
 
         grecaptcha.ready(function() {
@@ -246,11 +275,12 @@
                 dataType: 'json',
                 data: $('#appointment_form').serialize(),
                 success: function(data) {
-                    if (data.result == false){
+                    if (data.result ==true){
                         alert(data.message)
                         location.href = '/'
                     }else {
-
+                        $("#error_label").html(data.message.q_other);
+                        $('#error_div').css('display', 'block');
                     }
                 }
             });
