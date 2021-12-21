@@ -2,10 +2,15 @@
 {% load static from static %}
 {% block content %}
     <style>
+        .wrapper{
+            flex-grow: 1;
+        }
         .background{
             height: 400px;
             width: 100%;
             background-image: url({% static "img/22042531-1_m.jpg" %});
+            opacity: 0.3;
+            transition: opacity 2s;
         }
         .topic_label{
             position: absolute;
@@ -14,6 +19,8 @@
             font-size: xxx-large;
             font-family: 'Amatic SC', cursive;
             color: black;
+            opacity: 0.3;
+            transition: opacity 3s;
         }
         .img_set{
             width: 35%;
@@ -29,8 +36,21 @@
             font-size: xx-large;
             font-family: 'M PLUS 1 Code', sans-serif;
         }
+        .footer{
+            height: 150px;
+            background-color: #5f788a;
+            padding-top: 10px;
+            padding-left: 600px;
+        }
+        .test_area{
+            height: 400px;
+        }
+        .button_label{
+            font-size: x-large;
+            font-family: 'Kalam', cursive;
+        }
         </style>
-    <div>
+    <div class="wrapper">
         <div class="background">
             <div class="topic_label">
                 <label>Caring like cloud</label>
@@ -75,5 +95,26 @@
                 </div>
             </div>
         </div>
+        <div class="test_area">
+
+        </div>
+        <footer class="footer">
+            <div>
+                <img class="title_img" width="40" height="40" src="{% static 'img/cloud-computing.png' %}">
+                <label class="button_label">Cloud Counseling Office</label><br>
+                <label>
+                    Address:Counseling road Counseling street No.100<br>
+                    Business hours: 10:00 ~ 21:00 <br>
+                    Email:liucloudconsulting@gmail.com
+                </label>
+
+            </div>
+        </footer>
     </div>
+    <script>
+        $( document ).ready(function(){
+            $('.topic_label').css('opacity', 1);
+            $('.background').css('opacity', 1);
+        });
+    </script>
 {% endblock %}

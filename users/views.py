@@ -79,3 +79,6 @@ def appointment(request):
         else:
             form = AppointmentIssueForm()
         return render(request, 'users/appointment.html', locals())
+
+def about(request):
+    return render(request, 'users/about.html')
