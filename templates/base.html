@@ -2,21 +2,37 @@
 <!doctype html>
 <html lang="en">
 <style>
+    html, body {
+        height: 90%;
+        width: 99.6%;
+        margin: 0;
+    }
+    .header{
+        position: absolute;
+        top:0;
+        z-index: 900;
+    }
     #topic{
         position: fixed;
-        top: 0;
         width: 100%;
         height: 80px;
-        z-index: 10;
     }
     .top_title{
         color: #004B97;
         padding-left: 10px;
         font-family: 'Kalam', cursive;
     }
-    .row{
-        margin-right: 0 !important;
-        margin-left: 0 !important;
+    .main-content{
+        min-height: 100%;
+    }
+    .footer {
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 150px;
+        background-color: #5f788a;
+        padding-top: 10px;
+        padding-left: 600px;
     }
 </style>
   <head>
@@ -26,7 +42,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
+    
     <link rel="stylesheet" type="text/css" href="{% static 'home/main.css' %}">
 
       <!-- Google font -->
@@ -42,22 +58,26 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous"></script>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
     <title>Cloud Counseling Office</title>
   </head>
-  <body>
-    <header class="site-header">
+  <body onhashchange="changeHash()">
+    <header class="site-header header">
       <nav id="topic" class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
             <img class="title_img" width="50" height="50" src="{% static 'img/cloud-computing.png' %}">
-            <a class="navbar-brand top_title" href="{% url 'base_home' %}">Cloud Counseling Office</a>
+            <a class="navbar-brand top_title" href="{% url 'home' %}">Cloud Counseling Office</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-        <div style="width: 50%"></div>
+            <div style="width: 50%">
+                {% if user.is_superuser %}
+                    <a class="btn btn btn-outline-light" href="{% url 'spuser_managepage' %}">Management</a>
+                {% endif %}
+            </div>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{% url 'base_home' %}">Home</a>
+              <a class="nav-item nav-link" href="{% url 'home' %}">Home</a>
               <a class="nav-item nav-link" href="{% url 'about' %}">About</a>
             </div>
             <!-- Navbar Right Side -->
@@ -74,20 +94,45 @@
         </div>
       </nav>
     </header>
-    <div>
+    <div class="main-content">
         {% block content %}{% endblock %}
     </div>
+    <footer class="footer">
+        <div>
+            <img class="title_img" width="40" height="40" src="{% static 'img/cloud-computing.png' %}">
+            <label class="button_label">Cloud Counseling Office</label><br>
+            <label>
+                Address:Counseling road Counseling street No.100<br>
+                Business hours: 10:00 ~ 21:00 <br>
+                Email:liucloudconsulting@gmail.com
+            </label>
 
+        </div>
+    </footer>
 
-    <!-- Optional JavaScript; choose one of the two! -->
-
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
-
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
-    -->
   </body>
+    <script>
+        $(document).ready(function() {
+            changeHash()
+        });
+
+        function changeHash(){
+            var location = window.location
+            if(location.hash.indexOf("#") != -1){
+                var newOrigin = location.origin + '/' +location.pathname.split('/')[1] + location.hash.replace("#", "/") +'/'
+                $.get(newOrigin, function(html){
+                    $("#formHolder").html(html)
+                });
+            }
+        }
+
+        function formHash(appPath, para){
+            console.log(appPath, location.pathname)
+            if(location.pathname.split('/')[1] == appPath.split('/')[1]){
+                window.location.hash ="#" + appPath.split('/')[2]
+            }else{
+               //window.open(location.origin + appPath + "#" + para, '_self')
+            }
+        }
+    </script>
 </html>

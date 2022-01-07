@@ -1,0 +1,65 @@
+<style>
+    .topic{
+        font-size: large;
+    }
+</style>
+<div class="row no-gutters">
+    <div class="col-6">
+        <form id="update_news_form" style="display: block">
+            {% csrf_token %}
+            <button type="button" class="btn btn-outline-primary" style="margin: 10px">Create News</button>
+            <div style="width: 90%; margin-left: auto">
+                <label class="topic">Title</label>
+                <input id="news_title" name="news_title" class="form-control" >
+                <label class="topic">Content</label>
+                <textarea id="news_content" name="news_content" class="form-control" style="height: 300px; resize: none"></textarea>
+                <label>Active</label>
+                <select id="active" class="form-select" aria-label="Default select example"
+                        style="margin-bottom: 10px; width: 100px">
+                  <option></option>
+                  <option value="true">True</option>
+                  <option value="false">False</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="col-6">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Creat Date</th>
+                    <th scope="col">Active</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for new in original_news %}
+                    <tr id="news_row{{ forloop.counter }}" onclick="news_row(this.id)">
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ new.news_title }}</td>
+                        <td>{{ new.creatdt }}</td>
+                        <td>{{ new.active }}</td>
+                        <td style="display: none">{{ new.seq }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function news_row(item) {
+        $.ajax({
+            method:'GET',
+            url: '{% url 'load_news' %}',
+            data:{
+                seq:$('#' + item + ' td:eq(3)').text(),
+            },
+            success:function (data){
+                $('#news_title').val(data[0].news_title);
+                $('#news_content').val(data[0].news_content);
+                $('#active').val((data[0].active).toString());
+            }
+        })
+    }
+</script>
