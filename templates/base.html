@@ -127,11 +127,10 @@
         }
 
         function formHash(appPath, para){
-            console.log(appPath, location.pathname)
             if(location.pathname.split('/')[1] == appPath.split('/')[1]){
                 window.location.hash ="#" + appPath.split('/')[2]
             }else{
-               //window.open(location.origin + appPath + "#" + para, '_self')
+               window.open(location.origin + appPath + "#" + para, '_self')
             }
         }
     </script>
