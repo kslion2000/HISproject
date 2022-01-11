@@ -2,44 +2,75 @@
     .topic{
         font-size: large;
     }
+    .column_1{
+        width: 6%;
+    }
+    .column_2{
+        width: 55%;
+    }
+    .column_3{
+        width: 30%;
+    }
+    {##news_div{#}
+    {#    height: 500px;#}
+    {#    overflow: scroll;#}
+    {#    margin-top: 30px;#}
+    {#}#}
+    table{
+        text-align: left;
+    }
+    table tbody {
+        display: block;
+        height: 500px;
+        overflow-y: scroll;
+    }
+    table tr {
+        width: 100%;
+        display: table;
+
+    }
 </style>
 <div class="row no-gutters">
     <div class="col-6">
         <form id="update_news_form" style="display: block">
             {% csrf_token %}
-            <button type="button" class="btn btn-outline-primary" style="margin: 10px">Create News</button>
+            <button class="btn btn-outline-primary" type="button" onclick="enter_new_form()" style="margin: 10px">Create New</button>
             <div style="width: 90%; margin-left: auto">
+                <input id="seq" name="seq" class="new_form" style="display: none">
                 <label class="topic">Title</label>
-                <input id="news_title" name="news_title" class="form-control" >
+                <input id="news_title" name="news_title" class="form-control new_form" >
                 <label class="topic">Content</label>
-                <textarea id="news_content" name="news_content" class="form-control" style="height: 300px; resize: none"></textarea>
+                <textarea id="news_content" name="news_content" class="form-control new_form" style="height: 300px; resize: none"></textarea>
+                <label class="topic">Link</label>
+                <input id="news_link" name="news_link" class="form-control new_form">
                 <label>Active</label>
-                <select id="active" class="form-select" aria-label="Default select example"
+                <select id="active" name="active" class="form-select new_form" aria-label="Default select example"
                         style="margin-bottom: 10px; width: 100px">
                   <option></option>
-                  <option value="true">True</option>
-                  <option value="false">False</option>
-                </select>
+                  <option value=1>True</option>
+                  <option value=0>False</option>
+                </select><br>
+                <input id="save" class="btn btn-primary" onclick="form_submit()" value="Submit">
             </div>
         </form>
     </div>
-    <div class="col-6">
-        <table class="table table-hover">
+    <div id="news_div" class="col-6">
+        <table id="news_table" class="table table-hover">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Creat Date</th>
-                    <th scope="col">Active</th>
+                    <th scope="col" class="column_1">#</th>
+                    <th scope="col" class="column_2">Title</th>
+                    <th scope="col" class="column_3">Creat Date</th>
+                    <th scope="col" class="column_4">Active</th>
                 </tr>
             </thead>
             <tbody>
                 {% for new in original_news %}
                     <tr id="news_row{{ forloop.counter }}" onclick="news_row(this.id)">
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ new.news_title }}</td>
-                        <td>{{ new.creatdt }}</td>
-                        <td>{{ new.active }}</td>
+                        <th scope="row" class="column_1">{{ forloop.counter }}</th>
+                        <td class="column_2">{{ new.news_title }}</td>
+                        <td class="column_3">{{ new.creatdt }}</td>
+                        <td class="column_4">{{ new.active }}</td>
                         <td style="display: none">{{ new.seq }}</td>
                     </tr>
                 {% endfor %}
@@ -47,8 +78,25 @@
         </table>
     </div>
 </div>
+<div id="error_box" class="modal" style="display: none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Error Message</h5>
+            </div>
+            <div class="modal-body">
+            <div id="error_message"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="$('#error_message').html('');$('#error_box').css('display', 'none')" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     function news_row(item) {
+        $('[id^="news_row"]').css('background-color', 'transparent');
+        $('#' + item).css('background-color', '#FFE66F');
         $.ajax({
             method:'GET',
             url: '{% url 'load_news' %}',
@@ -56,10 +104,71 @@
                 seq:$('#' + item + ' td:eq(3)').text(),
             },
             success:function (data){
+                $('#seq').val(data[0].seq);
                 $('#news_title').val(data[0].news_title);
                 $('#news_content').val(data[0].news_content);
-                $('#active').val((data[0].active).toString());
+                $('#news_link').val(data[0].news_link);
+                if (data[0].active == true){
+                    $('#active').val(1)
+                }else {
+                    $('#active').val(0)
+                }
             }
         })
     }
+
+    function form_submit(){
+        var form = $('#update_news_form');
+        $.ajax({
+           type: "POST",
+           url: '{% url 'update_news' %}',
+           data: form.serialize(),
+           success: function(data)
+           {
+               if(data.result){
+                   alert(data.message);
+                   location.reload()
+               }else{
+                   $('#error_message').html($.parseHTML(data.message));
+                   $('#error_box').css('display', 'block');
+               }
+           }
+        });
+    }
+
+    function enter_new_form(){
+        $('[id^="news_row"]').css('background-color', 'transparent');
+        $('.new_form').val('');
+    }
+
+    $('#news_table tbody').scroll(function (){
+        var height = $(this)[0].scrollHeight;
+        var top = $(this)[0].scrollTop;
+        var div_height = $(this).height();
+        var data_lengh = $('#news_table').find('tr').length
+        if (div_height + top >= height){
+            $.ajax({
+               type: "GET",
+               url: '{% url 'update_news' %}',
+               data:{
+                   'getData':data_lengh
+               },
+               success: function(datas)
+               {
+                   var new_data = ''
+                   $.each(datas, function(index,val){
+                        new_data +=` <tr id="news_row` + data_lengh+index + `" onclick="news_row(this.id)">
+                            <th scope="row" class="column_1">` + parseInt(data_lengh + index) + `</th>
+                            <td class="column_2">` + val.news_title + `</td>
+                            <td class="column_3">` + val.creatdt + `</td>
+                            <td class="column_4">` + val.active + `</td>
+                            <td style="display: none">` + val.seq + `</td>
+                           </tr>`
+                   })
+                   $('#news_table tbody').append(new_data)
+               }
+            });
+        }
+
+    })
 </script>

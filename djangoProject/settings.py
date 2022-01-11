@@ -52,9 +52,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_auto_logout.middleware.auto_logout',
 ]
 
 ROOT_URLCONF = 'djangoProject.urls'
+
+AUTO_LOGOUT = {
+    'SESSION_TIME': 36000,
+}
 
 TEMPLATES = [
     {
