@@ -1,3 +1,4 @@
+{% load static from static %}
 <style>
     .topic{
         font-size: large;
@@ -11,11 +12,9 @@
     .column_3{
         width: 30%;
     }
-    {##news_div{#}
-    {#    height: 500px;#}
-    {#    overflow: scroll;#}
-    {#    margin-top: 30px;#}
-    {#}#}
+    .column_4{
+        width: 5%;
+    }
     table{
         text-align: left;
     }
@@ -24,10 +23,25 @@
         height: 500px;
         overflow-y: scroll;
     }
+    table tbody::-webkit-scrollbar {
+        display: none;
+    }
     table tr {
         width: 100%;
         display: table;
 
+    }
+    #active{
+        display: flex !important;
+    }
+    #news_location{
+        display: flex !important;
+    }
+    #img_icon{
+        width: 50px;
+        height: 50px;
+        margin-left: 20px;
+        margin-top: 10px;
     }
 </style>
 <div class="row no-gutters">
@@ -43,13 +57,29 @@
                 <textarea id="news_content" name="news_content" class="form-control new_form" style="height: 300px; resize: none"></textarea>
                 <label class="topic">Link</label>
                 <input id="news_link" name="news_link" class="form-control new_form">
-                <label>Active</label>
-                <select id="active" name="active" class="form-select new_form" aria-label="Default select example"
-                        style="margin-bottom: 10px; width: 100px">
-                  <option></option>
-                  <option value=1>True</option>
-                  <option value=0>False</option>
-                </select><br>
+                <div class="row row-no-gutters">
+                    <div class="col-3">
+                        <label>Active</label>
+                        <select id="active" name="active" class="form-select new_form" aria-label="Default select example"
+                                style="width: 100px">
+                          <option></option>
+                          <option value=1>True</option>
+                          <option value=0>False</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label>Icon</label>
+                    <select id="news_location" name="news_location" class="form-select new_form" style="margin-bottom: 10px; width: 250px">
+                        <option></option>
+                        {% for file in img_files %}
+                            <option value="{{ file }}">{{ file }}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                    <div class="col-4">
+                        <img id="img_icon">
+                    </div>
+                </div>
                 <input id="save" class="btn btn-primary" onclick="form_submit()" value="Submit">
             </div>
         </form>
@@ -108,6 +138,9 @@
                 $('#news_title').val(data[0].news_title);
                 $('#news_content').val(data[0].news_content);
                 $('#news_link').val(data[0].news_link);
+                console.log(data[0].news_location)
+                $('#news_location').val(data[0].news_location);
+                $('#img_icon').attr('src', '/static/img/' + data[0].news_location)
                 if (data[0].active == true){
                     $('#active').val(1)
                 }else {
@@ -139,6 +172,7 @@
     function enter_new_form(){
         $('[id^="news_row"]').css('background-color', 'transparent');
         $('.new_form').val('');
+        $('#img_icon').attr('src', '')
     }
 
     $('#news_table tbody').scroll(function (){
@@ -169,6 +203,9 @@
                }
             });
         }
-
+    })
+    $('#news_location').change(function (){
+        var icon_url = '/static/img/' + $('#news_location').val()
+        $('#img_icon').attr('src', icon_url)
     })
 </script>

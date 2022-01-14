@@ -5,7 +5,7 @@
         .background{
             height: 400px;
             width: 100%;
-            background-image: url({% static "img/22042531-1_m.jpg" %});
+            background-image: url({% static "img/sky_cloud.jpg" %});
             opacity: 0.3;
             transition: opacity 2s;
         }
@@ -32,13 +32,6 @@
             margin-bottom: 20px;
             font-size: xx-large;
             font-family: 'M PLUS 1 Code', sans-serif;
-        }
-        .test_area{
-            height: 400px;
-        }
-        .button_label{
-            font-size: x-large;
-            font-family: 'Kalam', cursive;
         }
         .main_content{
             padding-top:30px;
@@ -94,50 +87,27 @@
                 <img width="50" height="50" src="{% static 'img/cloud2.png' %}">
                 <label>Latest News</label>
             </div>
-            <div class="row no-gutters" style="margin-top: 50px; margin-bottom: 50px">
-                <div class="col-4 d-flex align-items-start">
-                    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
-                      <svg class="bi" width="1em" height="1em">
-                          <img width="50em" height="50em" src="{% static 'img/weekend.png' %}">
-                      </svg>
-                    </div>
-                    <div>
-                      <h2>We start the weekend service!</h2>
-                        <p>According to our arrangement, we finally have enough manpower to support the service on the
-                            weekend. Hoping this change can provide better flexibility to all customers. Welcome to make
-                            the appointment with our counselors.</p>
-                      <a href="#" class="btn btn-primary">
-                        More Detail
-                      </a>
-                    </div>
-                </div>
-                <div class="col-4 d-flex align-items-start">
-                    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
-                      <svg class="bi" width="1em" height="1em">
-                          <img width="50em" height="50em" src="{% static 'img/health-care.png' %}">
-                      </svg>
-                    </div>
-                    <div>
-                      <h2>Free consultation for medical personnel</h2>
-                        <p>To thanks to all medical personnel's contributions, the government provides six times
-                            consultation service. Please click the button below to see more information or contact us right now.</p>
-                      <a href="https://dep.mohw.gov.tw/domhaoh/cp-4740-62476-107.html" target="_blank" class="btn btn-primary">
-                        More Detail
-                      </a>
-                    </div>
-                </div>
-                <div class="col-4 d-flex align-items-start">
-                    <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
-                      <svg class="bi" width="1em" height="1em">
-                          <img width="50em" height="50em" src="{% static 'img/healthcare.png' %}">
-                      </svg>
-                    </div>
-                    <div>
-                      <h2>Always taking care of the family? You also need to be taken care of.</h2>
-                        <p>Being the main family support, working all day and night, do you always feel tired?</p>
-                      <a href="#" class="btn btn-primary">
-                        More Detail
-                      </a>
+            <div class="row row-no-gutters">
+                <div class="col-12">
+                    <div class="carousel">
+                        {% for new in all_news %}
+                            <div class="carousel__slide">
+                                <div class="col-10 d-flex align-items-start">
+                                    <div class="icon-square bg-light text-dark flex-shrink-0 me-3" >
+                                      <svg class="bi" width="1em" height="1em">
+                                          <img width="50em" height="50em" src="/static/img/{{ new.news_location }}">
+                                      </svg>
+                                    </div>
+                                    <div>
+                                      <h2>{{ new.news_title }}</h2>
+                                        <p>{{ new.news_content }}</p>
+                                      <a href="{{ new.news_link }}" class="btn btn-primary">
+                                        More Detail
+                                      </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -147,6 +117,8 @@
         $( document ).ready(function(){
             $('.topic_label').css('opacity', 1);
             $('.background').css('opacity', 1);
+        });
+        const myCarousel = new Carousel(document.querySelector(".carousel"), {
         });
     </script>
 {% endblock %}
