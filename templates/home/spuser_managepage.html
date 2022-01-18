@@ -20,32 +20,35 @@
             white-space: nowrap;
         }
         #formHolder{
-            margin-left: 250px;
+            margin-left: 80px;
             transition:0.5s
+        }
+        img{
+            margin: 5px;
         }
     </style>
     <div class="d-flex flex-column flex-shrink-0 p-3 sidebar" onmouseover="sidebar_extend(true)" onmouseout="sidebar_extend(false)">
         <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-          <img width="40" height="40" style="margin: 5px" src="{% static 'img/manufacturing.png' %}">
+          <img width="40" height="40" src="{% static 'img/manufacturing.png' %}">
           <span class="fs-4">&nbsp;&nbsp;Functions</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
           <li class="nav-item">
             <a href="{% url 'home' %}" class="nav-link link-dark function_item">
-              <img width="30" height="30" style="padding-bottom: 3px" src="{% static 'img/home.png' %}">
+              <img width="30" height="30" src="{% static 'img/home.png' %}">
                 &nbsp;&nbsp;Home
             </a>
           </li>
           <li>
             <a href="javascript:void(0)" onclick="formHash('/home/update_news/', '')" class="nav-link link-dark function_item">
-              <img width="30" height="30" style="padding-bottom: 3px" src="{% static 'img/document.png' %}">
+              <img width="30" height="30" src="{% static 'img/document.png' %}">
               &nbsp;&nbsp;News Update
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link link-dark function_item">
-              <img width="30" height="30" style="padding-bottom: 3px" src="{% static 'img/user.png' %}">
+            <a href="javascript:void(0)" onclick="formHash('/home/schedule_arrangement/', '')" class="nav-link link-dark function_item">
+              <img width="30" height="30" src="{% static 'img/user.png' %}">
               &nbsp;&nbsp;Appointment
             </a>
           </li>
@@ -59,10 +62,10 @@
         function sidebar_extend(work) {
             if(work){
                 $('.sidebar').css('width','250px');
-                //$('#formHolder').css('marginLeft','250px');
+                $('#formHolder').css('marginLeft','250px');
             }else {
                 $('.sidebar').css('width','80px');
-                //$('#formHolder').css('marginLeft','80px');
+                $('#formHolder').css('marginLeft','80px');
             }
         };
     </script>

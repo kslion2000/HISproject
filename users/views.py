@@ -33,7 +33,6 @@ def appointment(request):
         datas = dict(request.POST)
         datas['q_other'] = datas['q_other'][0]
         week_dic = {}
-
         #安全性驗證
         recaptcha_response = datas['g-recaptcha-response'][0]
         data = {
@@ -42,9 +41,9 @@ def appointment(request):
         }
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
         result = r.json()
-        if result['success'] != True:
-            result = {'result': False, 'message': 'Security verification failed! Please try again.'}
-            return HttpResponse(json.dumps(result), content_type='application/json')
+        # if result['success'] != True:
+        #     result = {'result': False, 'message': 'Security verification failed! Please try again.'}
+        #     return HttpResponse(json.dumps(result), content_type='application/json')
 
         if issue_old_data:
             form = AppointmentIssueForm(datas, instance=issue_old_data[0])
@@ -53,6 +52,7 @@ def appointment(request):
                 appointment_temp.user_id = user_info
                 appointment_temp.updatedt = datetime.datetime.today()
                 appointment_temp.save()
+                New_user.objects.filter(user_ptr_id=user_info.id).update(app_active=True)
                 result = {'result': True, 'message': 'Save success. We will arrange with it as soon as possible.'}
                 return HttpResponse(json.dumps(result), content_type='application/json')
 
@@ -68,6 +68,7 @@ def appointment(request):
                 appointment_temp.creatdt = datetime.datetime.today()
                 appointment_temp.updatedt = datetime.datetime.today()
                 appointment_temp.save()
+                New_user.objects.filter(user_ptr_id=user_info.id).update(app_active=True)
                 result = {'result': True, 'message': 'Save success. We will arrange with it as soon as possible.'}
                 return HttpResponse(json.dumps(result), content_type='application/json')
             else:

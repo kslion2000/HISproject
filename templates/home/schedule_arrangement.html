@@ -1,0 +1,110 @@
+{% block Content0 %}
+    <style>
+        .tr_app{
+            border: #5f788a;
+            border-style: solid;
+        }
+        .th_app{
+            background-color: #5f788a;
+            color: white;
+            font-size: large;
+            width: 100px;
+        }
+        .th_info{
+            background-color: #5f788a;
+            color: white;
+            font-size: large;
+            width: 150px;
+            border: #5f788a;
+            border-style: solid;
+        }
+        input{
+            border-style: none;
+            font-size: x-large;
+        }
+        .part1_ans{
+            width: 370px;
+        }
+        .input-group{
+            border: #5f788a;
+            border-style: double;
+            height: 150px;
+        }
+        textarea{
+            resize:none;
+        }
+        .q_button{
+            margin-top: 5px;
+        }
+        #personal_info{
+            width: 96.7%;
+        }
+    </style>
+    <div class="row-no-gutters row" style="padding: 10px">
+        <div class="col-4">
+            <div id="calendar"></div>
+        </div>
+        <div class="col-6">
+            {% include '../users/uni_appointment.html' %}
+        </div>
+        <div class="col-2">
+            <table id="" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col" class="">#</th>
+                        <th scope="col" class="">Name</th>
+                        <th scope="col" class="">Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in app_list %}
+                        <tr id="approw_{{ app.id }}" onclick="render_app(this.id)">
+                            <th scope="row" class="column_1">{{ forloop.counter }}</th>
+                            <td class="">{{ app.last_name }}{{ app.first_name }}</td>
+                            <td class="">
+                                <div class="form-check form-switch">
+                                  <input id="check_{{ app.id }}" class="form-check-input"  type="checkbox">
+                                </div>
+                            </td>
+                            <td style="display: none">{{ app.id }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function (){
+            {% for app in app_list %}
+                if ('{{ app.app_active }}' == 'True'){ $('#check_{{ app.id }}').attr('checked','true')};
+            {% endfor %}
+            $('#appointment_form :input').attr("disabled", true);
+            $('#calendar').fullCalendar({
+                contentHeight:'auto',
+                dayClick:function (data, event, view){
+                    console.log(data.format('YYYY-MM-DD'))
+                    console.log(event)
+                    $('#calendar').fullCalendar('renderEvent', {
+                        title: 'new appointment',
+                        start: data.format('YYYY-MM-DD')
+                    });
+                }
+            })
+        })
+
+        function render_app(id){
+            $('[id^="approw_"]').css('background-color', 'transparent');
+            $('#' + id).css('background-color', '#FFE66F');
+            $.ajax({
+                method:'GET',
+                url: '{% url 'load_app' %}',
+                data:{
+                    id:id,
+                },
+                success:function (data){
+                    alert(data)
+                }
+            })
+        }
+    </script>
+{% endblock %}

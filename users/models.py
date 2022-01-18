@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class New_user(User):
     contact_number = models.CharField(db_column='contact_number', max_length=20)
+    app_active = models.BooleanField(db_column='app_active', default=False)
 
 class AppointmentIssue(models.Model):
     seq = models.BigAutoField(db_column='Seq', primary_key=True)
