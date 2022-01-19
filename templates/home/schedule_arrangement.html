@@ -48,7 +48,7 @@
             {% include '../users/uni_appointment.html' %}
         </div>
         <div class="col-2">
-            <table id="" class="table table-hover">
+            <table id="app_table" class="table table-hover">
                 <thead>
                     <tr>
                         <th scope="col" class="">#</th>
@@ -58,15 +58,16 @@
                 </thead>
                 <tbody>
                     {% for app in app_list %}
-                        <tr id="approw_{{ app.id }}" onclick="render_app(this.id)">
+                        <tr id="{{ app.id }}" onclick="render_app(this.id)">
                             <th scope="row" class="column_1">{{ forloop.counter }}</th>
-                            <td class="">{{ app.last_name }}{{ app.first_name }}</td>
+                            <td id="list_name_{{ app.id }}" class="">{{ app.last_name }} {{ app.first_name }}</td>
                             <td class="">
                                 <div class="form-check form-switch">
-                                  <input id="check_{{ app.id }}" class="form-check-input"  type="checkbox">
+                                  <input id="check_{{ app.id }}" class="form-check-input" onclick="app_active('{{ app.id }}', this.id)"  type="checkbox">
                                 </div>
                             </td>
-                            <td style="display: none">{{ app.id }}</td>
+                            <td id="list_number_{{ app.id }}" style="display: none">{{ app.contact_number }}</td>
+                            <td id="list_email_{{ app.id }}" style="display: none">{{ app.email }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -93,7 +94,7 @@
         })
 
         function render_app(id){
-            $('[id^="approw_"]').css('background-color', 'transparent');
+            $('#app_table tr').css('background-color', 'transparent');
             $('#' + id).css('background-color', '#FFE66F');
             $.ajax({
                 method:'GET',
@@ -101,8 +102,55 @@
                 data:{
                     id:id,
                 },
-                success:function (data){
-                    alert(data)
+                success:function (datas){
+                    $('#appointment_form :input').attr('checked', false);
+                    $('#q_other').val('');
+                    for (var key in datas[0]){
+                        if (datas[0][key]){ $('#' + key).attr('checked', true)}
+                        if (key == 'q_other'){$('#' + key).val(datas[0][key])}
+                    }
+                    var name = $('#list_name_' + id.toString()).text();
+                    $('#app_first').val(name.split(' ')[0]);
+                    $('#app_last').val(name.split(' ')[1]);
+                    $('#app_number').val($('#list_number_' + id.toString()).text());
+                    $('#app_email').val($('#list_email_' + id.toString()).text());
+                }
+            })
+        }
+        function app_active(appId, inputId){
+            var original = $('#' + inputId).prop('checked')
+            var message = ''
+            if (!original){
+                message = 'Do you want to CLOSE the appointment of this account?'
+            }else {
+                message = 'Do you want to OPEN the appointment of this account?'
+            }
+            Swal.fire({
+                title: message,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                denyButtonText: `Don't save`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        method:'GET',
+                        url: '{% url 'update_app_active' %}',
+                        data:{
+                            id:appId,
+                            status:original,
+                        },
+                        success:function (datas){
+                            Swal.fire(datas.message, '', 'success')
+                        }
+                    })
+
+                } else{
+                    if (original){
+                        $('#' + inputId).prop('checked', false)
+                    }else {
+                        $('#' + inputId).prop('checked', true)
+                    }
+
                 }
             })
         }

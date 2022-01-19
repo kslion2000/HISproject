@@ -81,13 +81,22 @@ def load_news(request):
 @is_superuser
 def load_app(request):
     if request.method == 'GET':
-        id = request.GET.get('id').split('_')[1]
+        id = request.GET.get('id')
         app_data = AppointmentIssue.objects.filter(user_id_id=id).values(
             'mon_m', 'mon_a', 'mon_e', 'tue_m', 'tue_a', 'tue_e', 'wed_m', 'wed_a', 'wed_e', 'thu_m', 'thu_a', 'thu_e',
             'fri_m', 'fri_a', 'fri_e', 'sat_m', 'sat_a', 'sat_e', 'sun_m', 'sun_a', 'sun_e', 'q_career', 'q_family',
             'q_stress', 'q_relationship', 'q_suicide', 'q_violence', 'q_homo', 'q_trauma', 'q_other')
     return HttpResponse(json.dumps(list(app_data)), content_type='application/json')
 
+@is_superuser
 def schedule_arrangement(request):
     app_list = New_user.objects.filter(is_active=True).order_by('-app_active', 'last_login')
     return render(request, "home/schedule_arrangement.html", locals())
+
+@is_superuser
+def update_app_active(request):
+    id = request.GET.get('id')
+    status = True if request.GET.get('status') == 'true' else False
+    New_user.objects.filter(user_ptr_id=id).update(app_active=status)
+    result = {'message': 'Update success'}
+    return HttpResponse(json.dumps(result), content_type='application/json')

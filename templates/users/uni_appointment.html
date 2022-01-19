@@ -8,21 +8,21 @@
                     <tr>
                         <th class="th_info">First Name</th>
                         <td class="tr_app">
-                            <input value="{{ user_form.first_name.value }}" readonly>
+                            <input id="app_first" value="{{ user_form.first_name.value }}" readonly>
                         </td>
                         <th class="th_info">Last Name</th>
                         <td class="tr_app">
-                            <input type="text" value="{{ user_form.last_name.value }}" readonly>
+                            <input id="app_last" type="text" value="{{ user_form.last_name.value }}" readonly>
                         </td>
                     </tr>
                     <tr>
                         <th class="th_info">Contact Number</th>
                         <td class="tr_app">
-                            <input type="text" value="{{ user_form.contact_number.value }}" readonly>
+                            <input id="app_number" type="text" value="{{ user_form.contact_number.value }}" readonly>
                         </td>
                         <th class="th_info">Email</th>
                         <td class="tr_app">
-                            <input type="text" value="{{ user_form.email.value }}" readonly>
+                            <input id="app_email" type="text" value="{{ user_form.email.value }}" readonly>
                         </td>
                     </tr>
                 </tbody>
@@ -145,7 +145,7 @@
 
                             <div class="input-group">
                               <span class="input-group-text">Other problem (please describe)</span>
-                              <textarea name="q_other" class="form-control" aria-label="With textarea">{% if form.q_other.value %}{{ form.q_other.value }}{% endif %}</textarea>
+                              <textarea id="q_other" name="q_other" class="form-control" aria-label="With textarea">{% if form.q_other.value %}{{ form.q_other.value }}{% endif %}</textarea>
                             </div>
                         </td>
                     </tr>
