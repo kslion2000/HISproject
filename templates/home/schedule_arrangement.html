@@ -39,6 +39,27 @@
         #personal_info{
             width: 96.7%;
         }
+        .modal-content{
+            width: 350px;
+            height: 500px;
+        }
+        .center_window{
+            position: absolute;
+            top:50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .text_input{
+            width: 300px;
+            height: 50px;
+        }
+        .text_input_note{
+            width: 300px;
+            height: 100px;
+        }
+        .label_text{
+            width: 80px;
+        }
     </style>
     <div class="row-no-gutters row" style="padding: 10px">
         <div class="col-4">
@@ -74,6 +95,55 @@
             </table>
         </div>
     </div>
+    <div id="event_window" class="modal" style="display: none">
+        <div class="center_window">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Appointment</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3 text_input">
+                        <span id="basic-addon1" class="input-group-text label_text">Date</span>
+                        <input id="appointment_date" class="form-control" type="text" aria-describedby="basic-addon1" readonly>
+                    </div>
+                    <div class="input-group mb-3 text_input">
+                        <span id="basic-addon2" class="input-group-text label_text">Name</span>
+                        <select id="appointment_name" class="form-select" aria-describedby="basic-addon2">
+                            <option></option>
+                            {% for app in app_list %}
+                                {% if app.app_active %}
+                                    <option value="{{ app.id }}">{{ app.last_name }} {{ app.first_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="input-group mb-3 text_input">
+                        <span id="basic-addon3" class="input-group-text label_text">Time</span>
+                        <select id="appointment_time" class="form-select" aria-describedby="basic-addon3">
+                            <option></option>
+                            <option value="10:00~11:00">10:00~11:00</option>
+                            <option value="11:00~12:00">11:00~12:00</option>
+                            <option value="13:00~14:00">13:00~14:00</option>
+                            <option value="14:00~15:00">14:00~15:00</option>
+                            <option value="15:00~16:00">15:00~16:00</option>
+                            <option value="16:00~17:00">16:00~17:00</option>
+                            <option value="18:00~19:00">18:00~19:00</option>
+                            <option value="19:00~20:00">19:00~20:00</option>
+                            <option value="20:00~21:00">20:00~21:00</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3 text_input_note">
+                        <span id="basic-addon4" class="input-group-text label_text">Note</span>
+                        <textarea id="appointment_note" class="form-control" type="text" aria-describedby="basic-addon4"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="window_clear()">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="creatEvent()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function (){
             {% for app in app_list %}
@@ -82,13 +152,21 @@
             $('#appointment_form :input').attr("disabled", true);
             $('#calendar').fullCalendar({
                 contentHeight:'auto',
+                header: {
+                            left: "prev,next today",
+                            center: "title",
+                            right: "month,basicWeek,basicDay"
+                        },
                 dayClick:function (data, event, view){
-                    console.log(data.format('YYYY-MM-DD'))
-                    console.log(event)
-                    $('#calendar').fullCalendar('renderEvent', {
-                        title: 'new appointment',
-                        start: data.format('YYYY-MM-DD')
-                    });
+                    $('#event_window').css('display', 'block')
+                    $('#appointment_date').val(data.format('YYYY-MM-DD'))
+                    //$('#calendar').fullCalendar('renderEvent', {
+                    //    title: 'new appointment',
+                    //    start: data.format('YYYY-MM-DD')
+                    //});
+                },
+                eventClick:function (event, element){
+                    $('#calendar').fullCalendar('updateEvent', event);
                 }
             })
         })
@@ -109,7 +187,7 @@
                         if (datas[0][key]){ $('#' + key).attr('checked', true)}
                         if (key == 'q_other'){$('#' + key).val(datas[0][key])}
                     }
-                    var name = $('#list_name_' + id.toString()).text();
+                    let name = $('#list_name_' + id.toString()).text();
                     $('#app_first').val(name.split(' ')[0]);
                     $('#app_last').val(name.split(' ')[1]);
                     $('#app_number').val($('#list_number_' + id.toString()).text());
@@ -118,8 +196,8 @@
             })
         }
         function app_active(appId, inputId){
-            var original = $('#' + inputId).prop('checked')
-            var message = ''
+            let original = $('#' + inputId).prop('checked')
+            let message
             if (!original){
                 message = 'Do you want to CLOSE the appointment of this account?'
             }else {
@@ -140,7 +218,8 @@
                             status:original,
                         },
                         success:function (datas){
-                            Swal.fire(datas.message, '', 'success')
+                            alert(datas.message)
+                            location.reload();
                         }
                     })
 
@@ -153,6 +232,34 @@
 
                 }
             })
+        }
+        function creatEvent(){
+            let eventDate = $('#appointment_date').val();
+            let eventTime = $('#appointment_time').val();
+            let color
+            if (eventTime.split(':')[0] > 17){
+                color = '#339933'
+            }else if (eventTime.split(':')[0] > 12){
+                color = '#FFCC33'
+            }else {
+                color = '#0066CC'
+            }
+            $('#calendar').fullCalendar('renderEvent', {
+                title: $('#appointment_name').find("option:selected").text(),
+                allDay:false,
+                backgroundColor:color,
+                borderColor:'transparent',
+                start: eventDate + 'T' + eventTime.split('~')[0],
+                end:eventDate + 'T' + eventTime.split('~')[1],
+                app_id:$('#appointment_name :selected').val(),
+                description:$('#appointment_note').val()
+            });
+            console.log($('#calendar').fullCalendar('clientEvents'))
+            window_clear()
+        }
+        function window_clear(){
+            $('#event_window').css('display', 'none');
+            $("[id^='appointment_']").val('')
         }
     </script>
 {% endblock %}
