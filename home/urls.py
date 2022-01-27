@@ -10,5 +10,6 @@ urlpatterns = [
     path('load_app/', views.load_app, name='load_app'),
     path('schedule_arrangement/', views.schedule_arrangement, name='schedule_arrangement'),
     path('update_app_active/', views.update_app_active, name='update_app_active'),
+    path('submit_calendar/', views.submit_calendar, name='submit_calendar'),
 
 ]

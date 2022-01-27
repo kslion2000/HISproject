@@ -64,6 +64,9 @@
     <div class="row-no-gutters row" style="padding: 10px">
         <div class="col-4">
             <div id="calendar"></div>
+            <div style="margin-top: 10px">
+                <button type="button" class="btn btn-primary" onclick="submitCalendar()">Save</button>
+            </div>
         </div>
         <div class="col-6">
             {% include '../users/uni_appointment.html' %}
@@ -102,6 +105,7 @@
                     <h5 class="modal-title">Create Appointment</h5>
                 </div>
                 <div class="modal-body">
+                    <input id="appointment_id" style="display: none">
                     <div class="input-group mb-3 text_input">
                         <span id="basic-addon1" class="input-group-text label_text">Date</span>
                         <input id="appointment_date" class="form-control" type="text" aria-describedby="basic-addon1" readonly>
@@ -121,15 +125,15 @@
                         <span id="basic-addon3" class="input-group-text label_text">Time</span>
                         <select id="appointment_time" class="form-select" aria-describedby="basic-addon3">
                             <option></option>
-                            <option value="10:00~11:00">10:00~11:00</option>
-                            <option value="11:00~12:00">11:00~12:00</option>
-                            <option value="13:00~14:00">13:00~14:00</option>
-                            <option value="14:00~15:00">14:00~15:00</option>
-                            <option value="15:00~16:00">15:00~16:00</option>
-                            <option value="16:00~17:00">16:00~17:00</option>
-                            <option value="18:00~19:00">18:00~19:00</option>
-                            <option value="19:00~20:00">19:00~20:00</option>
-                            <option value="20:00~21:00">20:00~21:00</option>
+                            <option value="10:00">10:00~11:00</option>
+                            <option value="11:00">11:00~12:00</option>
+                            <option value="13:00">13:00~14:00</option>
+                            <option value="14:00">14:00~15:00</option>
+                            <option value="15:00">15:00~16:00</option>
+                            <option value="16:00">16:00~17:00</option>
+                            <option value="18:00">18:00~19:00</option>
+                            <option value="19:00">19:00~20:00</option>
+                            <option value="20:00">20:00~21:00</option>
                         </select>
                     </div>
                     <div class="input-group mb-3 text_input_note">
@@ -147,7 +151,7 @@
     <script>
         $(document).ready(function (){
             {% for app in app_list %}
-                if ('{{ app.app_active }}' == 'True'){ $('#check_{{ app.id }}').attr('checked','true')};
+                if ('{{ app.app_active }}' == 'True'){ $('#check_{{ app.id }}').attr('checked','true')}
             {% endfor %}
             $('#appointment_form :input').attr("disabled", true);
             $('#calendar').fullCalendar({
@@ -160,15 +164,42 @@
                 dayClick:function (data, event, view){
                     $('#event_window').css('display', 'block')
                     $('#appointment_date').val(data.format('YYYY-MM-DD'))
-                    //$('#calendar').fullCalendar('renderEvent', {
-                    //    title: 'new appointment',
-                    //    start: data.format('YYYY-MM-DD')
-                    //});
                 },
                 eventClick:function (event, element){
-                    $('#calendar').fullCalendar('updateEvent', event);
+                    $('#appointment_id').val(event._id);
+                    $('#appointment_date').val(event.start._i.split('T')[0]);
+                    $('#appointment_time').val(event.start._i.split('T')[1]);
+                    $('#appointment_name').val(event.app_user_id).attr('disabled', true);
+                    $('#appointment_note').val(event.note);
+                    $('#event_window').css('display', 'block')
+
                 }
             })
+            //let historyEvent = JSON.parse('{{ allEvents }}');
+            let historyEvent = []
+            {% for old_event in allEvents %}
+                console.log(old_event)
+            {% endfor %}
+            {#    [{#}
+            {#    title: 'test event',#}
+            {#    start:moment('2022-01-21T10:00').format('Y-MM-DD HH:mm:ss'),#}
+            {#    end:moment('2022-01-21T11:00').format('Y-MM-DD HH:mm:ss'),#}
+            {#    note:'789456',#}
+            {#    backgroundColor: 'lightBlue',#}
+            {#    borderColor:'transparent',#}
+            {#    cal_id:1,                  ///預約table的seq#}
+            {#    app_user_id:'2'},          ///預約者user id#}
+            {#{#}
+            {#    title: 'test event2',#}
+            {#    start:moment('2022-01-23T15:00').format('Y-MM-DD HH:mm:ss'),#}
+            {#    end:moment('2022-01-23T16:00').format('Y-MM-DD HH:mm:ss'),#}
+            {#    note:'abcdefg',#}
+            {#    backgroundColor: 'lightBlue',#}
+            {#    borderColor:'transparent',#}
+            {#    cal_id:2,#}
+            {#    app_user_id:'3'#}
+            {#}]#}
+            $('#calendar').fullCalendar('renderEvents',historyEvent)
         })
 
         function render_app(id){
@@ -244,22 +275,45 @@
             }else {
                 color = '#0066CC'
             }
-            $('#calendar').fullCalendar('renderEvent', {
-                title: $('#appointment_name').find("option:selected").text(),
-                allDay:false,
-                backgroundColor:color,
-                borderColor:'transparent',
-                start: eventDate + 'T' + eventTime.split('~')[0],
-                end:eventDate + 'T' + eventTime.split('~')[1],
-                app_id:$('#appointment_name :selected').val(),
-                description:$('#appointment_note').val()
-            });
-            console.log($('#calendar').fullCalendar('clientEvents'))
+            if ($('#appointment_id').val()){
+                let update_event = $('#calendar').fullCalendar('clientEvents',$('#appointment_id').val())[0];
+                update_event.start = moment(eventDate + 'T' + eventTime).format('Y-MM-DD HH:mm:ss');
+                update_event.end = moment(eventDate + 'T' + (parseInt(eventTime.split(':'))+1) + ':00').format('Y-MM-DD HH:mm:ss');
+                update_event.note = $('#appointment_note').val();
+                update_event.backgroundColor = color;
+                $("#calendar").fullCalendar('removeEvents', $('#appointment_id').val());
+                $("#calendar").fullCalendar('renderEvent', update_event);
+            }else {
+                $('#calendar').fullCalendar('renderEvent', {
+                    title: $('#appointment_name').find("option:selected").text(),
+                    backgroundColor:color,
+                    borderColor:'transparent',
+                    start: moment(eventDate + 'T' + eventTime.split('~')[0]).format('Y-MM-DD HH:mm:ss'),
+                    end:moment(eventDate + 'T' + eventTime.split('~')[1]).format('Y-MM-DD HH:mm:ss'),
+                    app_user_id:$('#appointment_name :selected').val(),
+                    note:$('#appointment_note').val()
+                });
+            }
             window_clear()
         }
         function window_clear(){
             $('#event_window').css('display', 'none');
+            $('#appointment_name').attr('disabled', false);
             $("[id^='appointment_']").val('')
+        }
+        function submitCalendar(){
+            let events = $('#calendar').fullCalendar('clientEvents');
+            $.ajax({
+                method:'GET',
+                url: '{% url 'submit_calendar' %}',
+                data:{
+                    events:JSON.stringify(events),
+                },
+                success:function (datas){
+                    alert(datas.message)
+                    location.reload();
+                }
+            })
         }
     </script>
 {% endblock %}

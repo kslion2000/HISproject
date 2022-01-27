@@ -91,6 +91,10 @@ def load_app(request):
 @is_superuser
 def schedule_arrangement(request):
     app_list = New_user.objects.filter(is_active=True).order_by('-app_active', 'last_login')
+    allEvents = list(AppointmentCalander.objects.filter(active=True))
+    for event in allEvents:
+        nameObject = New_user.objects.filter(user_ptr_id=event.app_user_id).values('first_name', 'last_name')[0]
+        event.title = nameObject['first_name'] + ' ' + nameObject['last_name']
     return render(request, "home/schedule_arrangement.html", locals())
 
 @is_superuser
@@ -99,4 +103,35 @@ def update_app_active(request):
     status = True if request.GET.get('status') == 'true' else False
     New_user.objects.filter(user_ptr_id=id).update(app_active=status)
     result = {'message': 'Update success'}
+    return HttpResponse(json.dumps(result), content_type='application/json')
+
+@is_superuser
+def submit_calendar(request):
+    events = json.loads(request.GET.get('events'))
+    for event in events:
+        try:
+            record = AppointmentCalander.objects.filter(seq=event['cal_id'])
+            form = AppointmentCalanderForm(event, instance=record[0])
+            if form.is_valid():
+                submit_form = form.save(commit=False)
+                submit_form.active = True
+                submit_form.updateuser = request.user.id
+                submit_form.updatedt = datetime.today()
+                submit_form.save()
+                result = {'result': True, 'message': 'Save success.'}
+            else:
+                message = error_dict_convert(form.errors)
+                result = {'result': False, 'message': message}
+        except:
+            form = AppointmentCalanderForm(event)
+            if form.is_valid():
+                submit_form = form.save(commit=False)
+                submit_form.active = True
+                submit_form.creatuser = request.user.id
+                submit_form.creatdt = datetime.today()
+                submit_form.save()
+                result = {'result': True, 'message': 'Save success.'}
+            else:
+                message = error_dict_convert(form.errors)
+                result = {'result': False, 'message': message}
     return HttpResponse(json.dumps(result), content_type='application/json')

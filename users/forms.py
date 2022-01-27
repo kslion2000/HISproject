@@ -49,3 +49,11 @@ class AppointmentIssueForm(forms.ModelForm):
     class Meta:
         model = AppointmentIssue
         exclude = ['user_id', 'creatdt', 'updatedt']
+
+class AppointmentCalanderForm(forms.ModelForm):
+    note = forms.CharField(required=False, validators=[
+        MaxLengthValidator(100, message='[Note] Ensure this value in has at most 100 character.')])
+
+    class Meta:
+        model = AppointmentCalander
+        exclude = ['seq', 'creatuser', 'creatdt', 'updatedt']

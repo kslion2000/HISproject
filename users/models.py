@@ -42,3 +42,14 @@ class AppointmentIssue(models.Model):
     creatdt = models.DateTimeField(db_column='CreatDt', blank=True)
     updatedt = models.DateTimeField(db_column='UpdateDt', blank=True)
 
+class AppointmentCalander(models.Model):
+    seq = models.BigAutoField(db_column='Seq', primary_key=True)
+    app_user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    start = models.CharField(db_column='start', max_length=20, blank=True)
+    end = models.CharField(db_column='end', max_length=20, blank=True)
+    note = models.CharField(db_column='note', max_length=100, blank=True)
+    active = models.BooleanField(db_column='active', blank=True)
+    creatuser = models.IntegerField(db_column='CreatUser', blank=True)
+    creatdt = models.DateTimeField(db_column='CreatDt', blank=True)
+    updateuser = models.IntegerField(db_column='UpdateUser', blank=True, null=True)
+    updatedt = models.DateTimeField(db_column='UpdateDt', blank=True, null=True)
